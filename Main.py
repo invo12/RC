@@ -2,7 +2,7 @@ from GUI import MainApp
 from GetApiData import  GetAPI
 from socket import *
 from header import Header
-
+from package import Package
 
 
 
@@ -22,6 +22,9 @@ if __name__=="__main__":
 
     header.Print()
 
+    package = Package()
+    package.buildPackage(header.header,"da")
+    package.getPackage()
     #a.startMainProgramLoop()
 
 
