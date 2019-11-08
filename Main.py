@@ -7,9 +7,9 @@ from package import Package
 
 
 if __name__=="__main__":
-    #API=GetAPI()
+    API=GetAPI()
     #a=MainApp(API)
-    #API.getWeatherData("Iasi","metric")
+    API.getWeatherData("Iasi","metric")
 
 
     header=Header()
@@ -24,7 +24,10 @@ if __name__=="__main__":
 
     package = Package()
     package.buildPackage(header.header,"da")
-    package.getPackage()
+
+    print("\n\n\n Package")
+    a,b = package.getPackage()
+    print(a+" "+b)
     #a.startMainProgramLoop()
 
 
