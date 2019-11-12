@@ -6,7 +6,6 @@ from package import Package
 
 if __name__=="__main__":
     API=GetAPI()
-<<<<<<< HEAD
     a=MainApp(API)
     API.getWeatherData("Iasi","metric")
 
@@ -31,7 +30,7 @@ if __name__=="__main__":
     # server.listenClients()
     #
     # print("here")
-=======
+
     #a=MainApp(API)
     API.getWeatherData("Iasi","metric")
 
@@ -52,7 +51,7 @@ if __name__=="__main__":
     print("\n\n\n Package")
     a,b = package.getPackage()
     print(a+" "+b)
->>>>>>> 35316ea2358fa191b76de98d9ea4ca24cca11c45
+
     #a.startMainProgramLoop()
 
 

@@ -22,20 +22,9 @@ class Package():
         self.header = a[0:32+length*8]
         self.message = a[32+length*8:]
         return (self.header,self.message)
+
     def getPackage(self):
         return self.pack
-
-
-    def getPackage(self):
-        a = self.pack.decode()
-        length = int(str(a[4:8]),2)
-        self.header = a[0:32+length*8]
-        if self.message is not None:
-            self.message = a[32+length*8:]
-        else:
-            self.message=""
-        return self.header,self.message
-
 
     def getHeader(self):
         return self.header
