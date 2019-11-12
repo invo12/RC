@@ -20,32 +20,32 @@ def process(addr,requestClass,requestCode,m):
             else:
                 return (ERROR,"")
             if(m == "Coords"):
-                return str((OK,data["coord"]))
+                return (OK,data["coord"])
             elif(m == "Humidity"):
-                return str((OK,data["main"]["humidity"]))
+                return (OK,data["main"]["humidity"])
             elif (m == "Pressure"):
-                return str((OK,data["main"]["pressure"]))
+                return (OK,data["main"]["pressure"])
             elif (m == "Temperature"):
-                return str((OK,data["main"]["temp"]))
+                return (OK,data["main"]["temp"])
             elif (m == "Visibility"):
-                return str((OK,data["visibility"]))
+                return (OK,data["visibility"])
             elif (m == "Wind"):
-                return str((OK,data["wind"]))
+                return (OK,data["wind"])
             elif (m == "Zone"):
-                return str((OK,data["sys"]))
+                return (OK,data["sys"])
             elif (m == "All"):
-                return str((OK,data))
+                return (OK,data)
         elif (requestCode == 2):
             locations[addr] = m
-            return str((OK,''))
+            return (OK,'')
         elif (requestCode == 3):
             if(unit[addr] == "metric"):
                 unit[addr] = "imperial"
             else:
                 unit[addr] = "metric"
-            return str((OK,''))
+            return (OK,'')
     else:
-        return str((ERROR,data))
+        return (ERROR,data)
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 80
@@ -67,8 +67,9 @@ while 1:
     package.pack = data
     (h,m) = package.getPackageInfo()
     header.setHeaderAttributesFromString(h)
-    a = process(addr, header.getResponseClass(), header.getResponseCode(), m)
-    package.buildPackage(h,a)
+    request,a = process(addr, header.getResponseClass(), header.getResponseCode(), m)
+    header.setRequest(request//100,request%100)
+    package.buildPackage(header.header,str(a))
     conn.sendall(package.pack)
 conn.close()
 

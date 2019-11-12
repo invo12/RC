@@ -97,6 +97,9 @@ class Header():
     def getHeader(self):
         return self.header
 
+    def setRequest(self,requestClass,requestCode):
+        self.header = self.header[0:8] + format(requestClass,'03b') + format(requestCode,'05b') + self.header[16:]
+
     def BuilderPrint(self):
         print("\n\nBuilder-> ")
         print("Vers+Type+Token Length=" + str(self.byte1))

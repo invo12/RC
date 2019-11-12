@@ -9,7 +9,7 @@ class Package():
     def buildPackage(self,header,message):
         self.header = header
         self.message = message
-        if self.message is None or self.message is "":
+        if self.message == None or self.message == "":
             self.pack=self.header.encode()
         else:
             self.pack = (self.header + self.message).encode()
