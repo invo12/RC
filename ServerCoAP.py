@@ -1,1 +1,75 @@
+import socket
+from header import Header
+from package import Package
+from GetApiData import  GetAPI
+
+API=GetAPI()
+OK = 200
+ERROR_FILE_NOT_FOUND = 404
+ERROR = 500
+locations = {}
+unit = {}
+def process(addr,requestClass,requestCode,m):
+    data = 0
+    if(requestClass == 0):
+        if(requestCode == 0):
+            return (OK,"")
+        elif(requestCode == 1):
+            if(m in ["Coords","Humidity","Pressure","Temperature","Visibility","Wind","Zone","All"]):
+                data = API.getWeatherData(locations[addr], unit[addr])
+            else:
+                return (ERROR,"")
+            if(m == "Coords"):
+                return str((OK,data["coord"]))
+            elif(m == "Humidity"):
+                return str((OK,data["main"]["humidity"]))
+            elif (m == "Pressure"):
+                return str((OK,data["main"]["pressure"]))
+            elif (m == "Temperature"):
+                return str((OK,data["main"]["temp"]))
+            elif (m == "Visibility"):
+                return str((OK,data["visibility"]))
+            elif (m == "Wind"):
+                return str((OK,data["wind"]))
+            elif (m == "Zone"):
+                return str((OK,data["sys"]))
+            elif (m == "All"):
+                return str((OK,data))
+        elif (requestCode == 2):
+            locations[addr] = m
+            return str((OK,''))
+        elif (requestCode == 3):
+            if(unit[addr] == "metric"):
+                unit[addr] = "imperial"
+            else:
+                unit[addr] = "metric"
+            return str((OK,''))
+    else:
+        return str((ERROR,data))
+
+UDP_IP = "127.0.0.1"
+UDP_PORT = 80
+s = socket.socket(socket.AF_INET)  # address from internet,for udp
+s.bind((UDP_IP, UDP_PORT))
+s.listen(1)  # queue for connections of length 1
+print("Wait connections")
+conn, addr = s.accept()
+print("Client " + str(addr) + "connected on server " + str(conn.getsockname()))
+if(locations.get(addr) == None ):
+    locations[addr] = "Iasi"
+    unit[addr] = "metric"
+package = Package()
+header = Header()
+while 1:
+    data = conn.recv(1024)
+    if not data:
+        break
+    package.pack = data
+    (h,m) = package.getPackageInfo()
+    header.setHeaderAttributesFromString(h)
+    a = process(addr, header.getResponseClass(), header.getResponseCode(), m)
+    package.buildPackage(h,a)
+    conn.sendall(package.pack)
+conn.close()
+
 

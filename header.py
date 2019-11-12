@@ -68,8 +68,8 @@ class Header():
         self.responseClass=self.header[8:11]
         self.responseCode=self.header[11:16]
         self.messageId=self.header[16:32]
-        if self.tokenLength > 0:
-            self.token=self.header[32:32+self.tokenLength*8]
+        if self.getTokenLength() > 0:
+            self.token=self.header[32:32+self.getTokenLength()*8]
         else:
             self.token = ""
 

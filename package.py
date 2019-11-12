@@ -8,13 +8,14 @@ class Package():
         self.message = message
         self.pack = (self.header + self.message).encode()
         return self.pack
-    def getPackage(self):
+    def getPackageInfo(self):
         a = self.pack.decode()
         length = int(str(a[4:8]),2)
         self.header = a[0:32+length*8]
         self.message = a[32+length*8:]
-        print(self.header)
-        print(self.message)
+        return (self.header,self.message)
+    def getPackage(self):
+        return self.pack
     def getHeader(self):
         return self.header
     def getMessage(self):
