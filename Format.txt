@@ -1,0 +1,33 @@
+{"coord":{"lon":27.6,"lat":47.17},
+"weather":[{"id":741,"main":"Fog","description":"fog","icon":"50d"}],
+"base":"stations",
+"main":{"temp":6,"pressure":1015,"humidity":100,"temp_min":6,"temp_max":6},
+"visibility":300,
+"wind":{"speed":1.5,"deg":290},
+"clouds":{"all":20},
+"dt":1573196297,
+"sys":{"type":1,"id":6916,"country":"RO","sunrise":1573189340,"sunset":1573224260},
+"timezone":7200,"id":675810,"name":"Iasi","cod":200}
+
+
+Code:0.0	(Empty message)
+	Empty
+
+Code:0.1  (/GET )
+	Coords
+	Humidity
+	Pressure
+	Temperature
+	Visibility
+	Wind
+	Zone
+	All
+
+
+Code : 0.2    (/Post)
+	"Location:Nume"
+
+Code :0.3      (Custom C/F trigger)
+	Empty
+
+
