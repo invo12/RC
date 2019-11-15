@@ -49,28 +49,25 @@ def process(addr,requestClass,requestCode,m):
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 80
-s = socket.socket(socket.AF_INET)  # address from internet,for udp
+s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)  # address from internet,for udp
 s.bind((UDP_IP, UDP_PORT))
-s.listen(1)  # queue for connections of length 1
+
 print("Wait connections")
-conn, addr = s.accept()
-print("Client " + str(addr) + "connected on server " + str(conn.getsockname()))
-if(locations.get(addr) == None ):
-    locations[addr] = "Iasi"
-    unit[addr] = "metric"
+
 package = Package()
 header = Header()
 while 1:
-    data = conn.recv(1024)
-    if not data:
-        break
+    data,addr = s.recvfrom(1024)
+    if (locations.get(addr) == None):
+        locations[addr] = "Iasi"
+        unit[addr] = "metric"
     package.pack = data
     (h,m) = package.getPackageInfo()
     header.setHeaderAttributesFromString(h)
     request,a = process(addr, header.getResponseClass(), header.getResponseCode(), m)
     header.setRequest(request//100,request%100)
     package.buildPackage(header.header,str(a))
-    conn.sendall(package.pack)
+    s.sendto(package.pack,addr)
 conn.close()
 
 

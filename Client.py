@@ -4,7 +4,7 @@ from package import Package
 
 UDP_IP = '127.0.0.1'
 UDP_PORT = 80
-s = socket.socket(socket.AF_INET)
+s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 s.connect((UDP_IP,UDP_PORT))
 
 header=Header()
@@ -17,8 +17,8 @@ header.BuilderBuild()
 package = Package()
 package.buildPackage(header.header,"Coords")
 print("sending")
-s.sendall(package.getPackage())
-data = s.recv(1024)
-print(data.decode())
+s.sendto(package.getPackage(),(UDP_IP,UDP_PORT))
+data = s.recvfrom(1024)
+print(data[0].decode())
 print(header.header)
 s.close()

@@ -17,7 +17,7 @@ class GetAPI():
         response = response.decode()
         y = response.rfind('\n')
         jsonData=json.loads(response[y + 1:])
-        print(response[y+1:])
+        #print(response[y+1:])
         return jsonData
 
 
