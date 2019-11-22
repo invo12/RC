@@ -16,7 +16,6 @@ class GetAPI():
         s.send(request.encode())
         response = s.recv(4096)
         response = response.decode()
-
         response_code=re.findall(r"([0-9]{3})",response)[0]
         y = response.rfind('\n')
         jsonData=json.loads(response[y + 1:])

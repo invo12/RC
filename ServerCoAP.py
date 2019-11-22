@@ -2,6 +2,7 @@ import socket
 from header import Header
 from package import Package
 from GetApiData import  GetAPI
+from queue import Queue
 
 #threads
 from _thread import *
@@ -12,9 +13,10 @@ OK = 200
 ERROR = 404
 locations = {}
 unit = {}
+coada=Queue()
 lock = threading.Lock()
+
 def process(addr,data):
-    print("yes")
     request = 0
     message = ""
     if (locations.get(addr) == None):
@@ -28,50 +30,62 @@ def process(addr,data):
             request = OK
             message = ""
         elif (header.getResponseCode() == 1):
-            if (m in ["Coords", "Humidity", "Pressure", "Temperature", "Visibility", "Wind", "Zone", "All"]):
+            if (m.lower() in ["coords", "humidity", "pressure", "temperature", "visibility", "wind", "zone", "all"]):
                 data1,response_code_data = API.getWeatherData(locations[addr], unit[addr])
                 if(response_code_data == "200"):
                     data=data1
-                    if (m == "Coords"):
+                    if (m.lower() == "coords"):
                         request = OK
                         message = data["coord"]
-                    elif (m == "Humidity"):
+                    elif (m.lower() == "humidity"):
                         request = OK
                         message = data["main"]["humidity"]
-                    elif (m == "Pressure"):
+                    elif (m.lower() == "pressure"):
                         request = OK
                         message = data["main"]["pressure"]
-                    elif (m == "Temperature"):
+                    elif (m.lower() == "temperature"):
                         request = OK
                         message = data["main"]["temp"]
-                    elif (m == "Visibility"):
+                    elif (m.lower() == "visibility"):
                         request = OK
                         message = data["visibility"]
-                    elif (m == "Wind"):
+                    elif (m.lower() == "wind"):
                         request = OK
                         message = data["wind"]
-                    elif (m == "Zone"):
+                    elif (m.lower() == "zone"):
                         request = OK
                         message = data["sys"]
-                    elif (m == "All"):
+                    elif (m.lower() == "all"):
                         request = OK
                         message = data
                 else:
                     request = ERROR
-                    message = "Server Data could not be accessed"
+                    message = "Server Data could not be accessed or the Location is invalid"
+                    print("Error at getting API data")
             else:
                 request = ERROR
                 message = "Wrong access to resource"
+                print("Received a wrong GET request")
 
         elif (header.getResponseCode() == 2):
-            locations[addr] = m
-            request = OK
-            message = ""
+            if(m[:9].lower()=="location:"):
+                m=m[9:].lower()
+                print("The new location is = "+ m + " for address "+ str(addr))
+                locations[addr] = m
+                request = OK
+                message = ""
+            else:
+                request = ERROR
+                print("Received a wrong POST request from address "+ str(addr))
+                message = "Wrong Location Request"
+
         elif (header.getResponseCode() == 3):
             if (unit[addr] == "metric"):
                 unit[addr] = "imperial"
+                print("Unit switched to imperial for address "+ str(addr))
             else:
                 unit[addr] = "metric"
+                print("Unit switched to metric for address "+ str(addr))
             request = OK
             message = ''
     else:
@@ -95,6 +109,7 @@ package = Package()
 header = Header()
 while 1:
     data,addr = s.recvfrom(512)
+    coada.put((addr,data))
     start_new_thread(process,(addr,data,))
 s.close()
 
