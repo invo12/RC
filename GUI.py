@@ -1,14 +1,96 @@
 import tkinter
 from tkinter import *
+import time
+import random
+import re
 from tkinter import ttk
 from GetApiData import GetAPI
 
 
 class MainApp():
-    def __init__(self,API):
+    def __init__(self):
         self.root=Tk()
         self.root.geometry("800x600")
-        self.API=API
+        self.initLabels()
+        self.initEntries()
+        self.initButtons()
+        self.initLogBox()
+        #self.server = ServerCoAP()
 
+    def initEntries(self):
+        #ip
+        self.ipContent = StringVar()
+        self.ipEntry = Entry(self.root,textvariable=self.ipContent)
+        self.ipEntry.place(x=50,y=30)
+
+        #port
+        self.portContent = StringVar()
+        self.portEntry = Entry(self.root, textvariable=self.portContent)
+        self.portEntry.place(x=320, y=30)
+
+        #version
+        self.versionContent = StringVar()
+        self.versionEntry = Entry(self.root, textvariable=self.versionContent)
+        self.versionEntry.place(x=600,y = 30)
+    def initLabels(self):
+        #ip
+        self.ipLabel = Label(self.root,text="IP:")
+        self.ipLabel.place(x=30,y=30)
+
+        #port
+        self.portLabel = Label(self.root,text="PORT:")
+        self.portLabel.place(x=280,y=30)
+
+        #version
+        self.versionLabel = Label(self.root,text="VERSION:")
+        self.versionLabel.place(x=540,y=30)
+
+    def initButtons(self):
+        #wait
+        self.waitButtonLabel = StringVar()
+        self.waitButtonLabel.set("Free")
+        self.waitButton = Button(self.root,textvariable=self.waitButtonLabel,command=self.RandomWait)
+        self.waitButton.place(x=180,y=100,width=100,height=30)
+
+        #reset
+        self.resetButton = Button(self.root,text="Reset",command= lambda:self.afisare(1,2))
+        self.resetButton.place(x=460,y = 100,width=100,height=30)
+
+    def initLogBox(self):
+        #text area of the log
+        self.log = Text(self.root,bg="darkgreen")
+        self.log.place(x = 100,y=140,width = 600,height=390)
+
+        #scrollbar of the log
+        self.scroll = Scrollbar(self.root,command=self.log.yview)
+        self.scroll.place(x=690,y = 140,height = 390)
+        self.log['yscrollcommand'] = self.scroll.set
+    def RandomWait(self):
+        time.sleep(random.randint(1,3))
+
+    def Reset(self):
+        pass
+
+    def getInput(self):
+        p = 1
+        if(not re.match("^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",self.ipContent.get())):
+            p = 0
+        try:
+            if(not(int(self.portContent.get()) > 0 and int(self.portContent.get()) < 65535)):
+                p = 0
+            if(not(int(self.versionContent.get()) >= 0 and int(self.versionContent.get()) <= 3)):
+                p = 0
+        except:
+            p = 0
+        if(p == 1):
+            return (self.ipContent.get(),self.portContent.get(),self.versionContent.get())
+        else:
+            return None
+
+    def afisare(self,addr,info):
+        self.log.insert(INSERT,str(addr) + ": " + str(info) + '\n')
     def startMainProgramLoop(self):
         self.root.mainloop()
+
+app = MainApp()
+app.startMainProgramLoop()
