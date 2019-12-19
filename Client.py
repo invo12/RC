@@ -4,37 +4,10 @@ from package import Package
 
 UDP_IP = '127.0.0.1'
 UDP_PORT = 80
-s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+s = socket.socket(socket.AF_INET)
 s.connect((UDP_IP,UDP_PORT))
 
 header=Header()
-header.BuilderSetByte1(1,2,4)
-header.BuilderSetByteResp(0,2)
-header.BuilderSetMessageId(31)
-header.BuilderSetToken(63)
-header.BuilderBuild()
-
-package = Package()
-package.buildPackage(header.header,"Location:Bucharest")
-print("sending")
-s.sendto(package.getPackage(),(UDP_IP,UDP_PORT))
-data = s.recvfrom(1024)
-print(data[0].decode())
-
-
-header.BuilderSetByte1(1,2,4)
-header.BuilderSetByteResp(0,3)
-header.BuilderSetMessageId(31)
-header.BuilderSetToken(63)
-header.BuilderBuild()
-
-package = Package()
-package.buildPackage(header.header,"")
-print("sending")
-s.sendto(package.getPackage(),(UDP_IP,UDP_PORT))
-data = s.recvfrom(1024)
-print(data[0].decode())
-
 header.BuilderSetByte1(1,2,4)
 header.BuilderSetByteResp(0,1)
 header.BuilderSetMessageId(31)
@@ -44,9 +17,8 @@ header.BuilderBuild()
 package = Package()
 package.buildPackage(header.header,"Temperature")
 print("sending")
-s.sendto(package.getPackage(),(UDP_IP,UDP_PORT))
-data = s.recvfrom(1024)
-print(data[0].decode())
-
-
+s.sendall(package.getPackage())
+data = s.recv(1024)
+print(data.decode())
+print(header.header)
 s.close()
