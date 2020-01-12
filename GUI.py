@@ -3,6 +3,7 @@ from tkinter import *
 import time
 import random
 import re
+import ServerCoAP
 from tkinter import ttk
 from GetApiData import GetAPI
 
@@ -15,7 +16,8 @@ class MainApp():
         self.initEntries()
         self.initButtons()
         self.initLogBox()
-        #self.server = ServerCoAP()
+        self.server = ""
+
 
     def initEntries(self):
         #ip
@@ -50,11 +52,21 @@ class MainApp():
         self.waitButtonLabel = StringVar()
         self.waitButtonLabel.set("Free")
         self.waitButton = Button(self.root,textvariable=self.waitButtonLabel,command=self.RandomWait)
-        self.waitButton.place(x=180,y=100,width=100,height=30)
+        self.waitButton.place(x=120,y=100,width=100,height=30)
 
         #reset
-        self.resetButton = Button(self.root,text="Reset",command= lambda:self.afisare(1,2))
-        self.resetButton.place(x=460,y = 100,width=100,height=30)
+        self.resetButton = Button(self.root,text="Reset",command= self.Reset)
+        self.resetButton.place(x=260,y = 100,width=100,height=30)
+
+        self.startServer = Button(self.root, text="StartServer", command= self.StartServer)
+        self.startServer.place(x=540, y=100, width=100, height=30)
+
+        self.stopServer = Button(self.root, text="StopServer", command= self.StopServer)
+        self.stopServer.place(x=400, y=100, width=100, height=30)
+
+        #clear interface
+        self.clear = Button(self.root, text="Clear", command=lambda : self.log.delete(1.0, END))
+        self.clear.place(x=540, y=70, width=100, height=30)
 
     def initLogBox(self):
         #text area of the log
@@ -66,10 +78,23 @@ class MainApp():
         self.scroll.place(x=690,y = 140,height = 390)
         self.log['yscrollcommand'] = self.scroll.set
     def RandomWait(self):
-        time.sleep(random.randint(1,3))
+        self.server.SetDelayFlag(1)
 
     def Reset(self):
-        pass
+        self.server.SetResetFlag(1)
+
+    def StopServer(self):
+        if self.server != "":
+            self.server.ShutDownServer()
+            self.server = ""
+
+    def StartServer(self):
+        if self.server == "":
+            (ip, port, vers) = self.getInput()
+            self.server = ServerCoAP.ServerCOAP(ip, port, self)
+            self.server.SetVersion(vers)
+            self.server.StartServer()
+            self.print(ip," server started on " + port)
 
     def getInput(self):
         p = 1
@@ -87,7 +112,7 @@ class MainApp():
         else:
             return None
 
-    def afisare(self,addr,info):
+    def print(self,addr,info):
         self.log.insert(INSERT,str(addr) + ": " + str(info) + '\n')
     def startMainProgramLoop(self):
         self.root.mainloop()

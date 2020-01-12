@@ -97,9 +97,6 @@ class Header():
     def getHeader(self):
         return self.header
 
-    def setRequest(self,requestClass,requestCode):
-        self.header = self.header[0:8] + format(requestClass,'03b') + format(requestCode,'05b') + self.header[16:]
-
     def BuilderPrint(self):
         print("\n\nBuilder-> ")
         print("Vers+Type+Token Length=" + str(self.byte1))
@@ -120,3 +117,12 @@ class Header():
         print("Token=", str(self.getToken()))
         print("Header-> " + str(self.header))
         print("Header size->" + str(len(self.header)))
+
+    def setMessageID(self, param):
+        self.header=self.header[0:16]+format(param,'016b')+self.header[32:]
+
+    def setType(self, param):
+        self.header=self.header[0:2]+format(param,'02b')+self.header[4:]
+
+    def setRequest(self,requestClass,requestCode):
+        self.header = self.header[0:8] + format(requestClass,'03b') + format(requestCode,'05b') + self.header[16:]
