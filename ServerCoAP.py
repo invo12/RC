@@ -199,6 +199,7 @@ class ServerCOAP():
                     #daca nu primesc ack pe parcursul urmatoarei secunde, retransmit, altfel ma dau batut
                     for x in range(3):
                         if (addr,token) in self.RST:
+                            self.GUI.print(addr, "am primit RST")
                             del self.RST[(addr,token)]
                             break
                         time.sleep(1)

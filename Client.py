@@ -12,7 +12,7 @@ s.connect((UDP_IP,UDP_PORT))
 header=Header()
 
 
-header.BuilderSetByte1(1,1,4)
+header.BuilderSetByte1(1,0,4)
 header.BuilderSetByteResp(0,1)
 header.BuilderSetMessageId(31)
 header.BuilderSetToken(63)
@@ -23,15 +23,15 @@ package.buildPackage(header.header,"Temperature")
 print("sending")
 s.sendto(package.getPackage(),(UDP_IP,UDP_PORT))
 data = s.recvfrom(1024)
-
 print(data[0].decode())
-# time.sleep(6)
-# header.BuilderSetByte1(1,2,4)
-# header.BuilderSetByteResp(0,1)
-# header.BuilderSetMessageId(32)
+
+# time.sleep(1)
+# header.BuilderSetByte1(1,3,4)
+# header.BuilderSetByteResp(0,0)
+# header.BuilderSetMessageId(33)
 # header.BuilderSetToken(63)
 # header.BuilderBuild()
-
+#
 # package = Package()
 # package.buildPackage(header.header,"")
 # s.sendto(package.getPackage(),(UDP_IP,UDP_PORT))

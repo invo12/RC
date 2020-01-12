@@ -50,7 +50,7 @@ class MainApp():
     def initButtons(self):
         #wait
         self.waitButtonLabel = StringVar()
-        self.waitButtonLabel.set("Free")
+        self.waitButtonLabel.set("Delay OFF")
         self.waitButton = Button(self.root,textvariable=self.waitButtonLabel,command=self.RandomWait)
         self.waitButton.place(x=120,y=100,width=100,height=30)
 
@@ -78,7 +78,12 @@ class MainApp():
         self.scroll.place(x=690,y = 140,height = 390)
         self.log['yscrollcommand'] = self.scroll.set
     def RandomWait(self):
-        self.server.SetDelayFlag(1)
+        if self.waitButtonLabel.get() =="Delay OFF":
+            self.server.SetDelayFlag(1)
+            self.waitButtonLabel.set("Delay ON")
+        else:
+            self.server.SetDelayFlag(0)
+            self.waitButtonLabel.set("Delay OFF")
 
     def Reset(self):
         self.server.SetResetFlag(1)
@@ -87,6 +92,7 @@ class MainApp():
         if self.server != "":
             self.server.ShutDownServer()
             self.server = ""
+            self.waitButtonLabel.set("Delay OFF")
 
     def StartServer(self):
         if self.server == "":
