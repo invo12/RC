@@ -198,6 +198,8 @@ class ServerCOAP():
 
                     #daca nu primesc ack pe parcursul urmatoarei secunde, retransmit, altfel ma dau batut
                     for x in range(3):
+                        header.setMessageID(header.getMessageId() + 1)
+                        package.buildPackage(header.header, str(message))
                         if (addr,token) in self.RST:
                             self.GUI.print(addr, "am primit RST")
                             del self.RST[(addr,token)]

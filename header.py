@@ -120,6 +120,7 @@ class Header():
 
     def setMessageID(self, param):
         self.header=self.header[0:16]+format(param,'016b')+self.header[32:]
+        self.messageId=format(param,'016b')
 
     def setType(self, param):
         self.header=self.header[0:2]+format(param,'02b')+self.header[4:]
