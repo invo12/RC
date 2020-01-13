@@ -14,7 +14,7 @@ import threading
 
 class ServerCOAP():
     def __init__(self, ip, port,graphicalInterface):
-        self.OK = 200
+        self.OK = 205
         self.ERROR = 404
         self.locations = {}
         self.unit = {}
@@ -157,7 +157,7 @@ class ServerCOAP():
                         self.GUI.print(addr,"The new location is = " + m)
                         self.locations[addr] = m
                         request = self.OK
-                        message = ""
+                        message = "The new location is = " + m
                     else:
                         request = self.ERROR
                         self.GUI.print(addr, "Received a wrong POST request")
@@ -177,7 +177,7 @@ class ServerCOAP():
                 message = data
             header.setRequest(request // 100, request % 100)
             token=header.getToken()
-            print(header.getMessageType())
+            print("Tip mesaj->"+ str(header.getMessageType()))
             if header.getMessageType() == 0 and (addr,token) not in self.RST:
                 # daca mesajul e confirmable, trimit raspuns ca ACK+mesaj, daca nu pot raspunde acum, trimit ACK,
                 # apoi confirmalbe+mesaj pe acelasi token, dar MSG ID schimbat
